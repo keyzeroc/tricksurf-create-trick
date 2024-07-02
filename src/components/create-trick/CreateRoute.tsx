@@ -12,13 +12,36 @@ export interface TrickRouteTrigger extends TriggerData {
   jumps: number;
 }
 
-export default function CreateRoute() {
+export enum Maps {
+  "skyworld" = 1,
+  "japan" = 2,
+  "xdream" = 3,
+  "parc_colore" = 4,
+  "shimmer" = 5,
+  "machine" = 6,
+  "buck-wild" = 7,
+  "ski" = 8,
+  "innovation" = 9,
+  "concretejungle" = 10,
+  "instantdeath" = 11,
+  "appreciation" = 12,
+}
+
+type CreateRouteProps = {
+  map: Maps;
+};
+
+export default function CreateRoute({ map }: CreateRouteProps) {
   const [tier, setTier] = useState("1");
   const [jump, setJump] = useState("yes");
   const [startSpeed, setStartSpeed] = useState("pre");
   const [route, setRoute] = useState<TrickRouteTrigger[]>([]);
 
   const [trickString, setTrickString] = useState("");
+
+  useEffect(() => {
+    setRoute([]); //clear route on map change
+  }, [map]);
 
   useEffect(() => {
     updateTextArea();
@@ -53,9 +76,7 @@ export default function CreateRoute() {
       const oldIndex = prevRoute.findIndex(
         (trigger) => trigger.uid === activeId
       );
-      const newIndex = prevRoute.findIndex(
-        (trigger) => trigger.uid === overId
-      );
+      const newIndex = prevRoute.findIndex((trigger) => trigger.uid === overId);
       return arrayMove(prevRoute, oldIndex, newIndex);
     });
   };
@@ -77,7 +98,7 @@ export default function CreateRoute() {
         onSelectStartJump={setJump}
         onSelectStartSpeed={setStartSpeed}
       />
-      <Triggers onSelect={handleTriggerAdd} />
+      <Triggers map={map} onSelect={handleTriggerAdd} />
       <hr />
       <CurrentRoute
         route={route}

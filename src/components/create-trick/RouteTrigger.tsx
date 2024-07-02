@@ -19,6 +19,7 @@ export default function RouteTrigger({
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: trigger.uid });
 
+  // shit ain't animating at all bruh... (is it because element unmounts ?)
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
@@ -42,15 +43,16 @@ export default function RouteTrigger({
       </div>
       <span>{trigger.name}</span>
       <div className="flex flex-col gap-2 mt-auto">
-        <div className="flex items-center gap-2 px-1"><span>Jumps</span>
-        <Input
-          onChangeCapture={(e) =>
-            onChangeJumps(trigger.uid, Number(e.currentTarget.value))
-          }
-          min={0}
-          className="flex-1 max-w-20"
-          type="number"
-        />
+        <div className="flex items-center gap-2 px-1">
+          <span>Jumps</span>
+          <Input
+            onChangeCapture={(e) =>
+              onChangeJumps(trigger.uid, Number(e.currentTarget.value))
+            }
+            min={0}
+            className="flex-1 max-w-20"
+            type="number"
+          />
         </div>
         <Button
           className="hover:bg-red-800 w-full"
