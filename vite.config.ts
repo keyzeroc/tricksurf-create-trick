@@ -4,7 +4,7 @@ import { resolve } from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: "tricksurf-create-trick",
+  base: "/tricksurf-create-trick",
   plugins: [react()],
   resolve: {
     alias: {

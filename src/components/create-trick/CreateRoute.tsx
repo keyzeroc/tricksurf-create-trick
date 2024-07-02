@@ -4,9 +4,12 @@ import Triggers from "./Triggers";
 import { TriggerData } from "./Triggers";
 import CurrentRoute from "./CurrentRoute";
 import TrickSelectors from "./TrickSelectors";
+import { arrayMove } from "@dnd-kit/sortable";
+import { v4 as uuidv4 } from "uuid";
 
 export interface TrickRouteTrigger extends TriggerData {
-  bhop?: number;
+  uid: string;
+  jumps: number;
 }
 
 export default function CreateRoute() {
@@ -22,30 +25,45 @@ export default function CreateRoute() {
   }, [tier, jump, startSpeed, route]);
 
   const handleTriggerAdd = (trigger: TriggerData) => {
-    setRoute((prevRoute) => [...prevRoute, trigger]);
+    setRoute((prevRoute) => [
+      ...prevRoute,
+      { ...trigger, uid: uuidv4(), jumps: 0 },
+    ]);
   };
-  const handleTriggerRemove = (triggerIndex: number) => {
-    setRoute((prevRoute) => {
-      let arrayBackup = [...prevRoute];
-      arrayBackup.splice(triggerIndex, 1);
-      return arrayBackup;
-    });
+  const handleTriggerRemove = (uid: string) => {
+    setRoute((prevRoute) => prevRoute.filter((trigger) => trigger.uid !== uid));
   };
-  const handleTriggerAddBhop = (triggerIndex: number, bhops: number) => {
+
+  const handleTriggerChangeJumps = (uid: string, jumps: number) => {
     setRoute((prevRoute) => {
-      return prevRoute.map((trigger, index) => {
-        if (index === triggerIndex) {
-          return { ...trigger, bhop: bhops };
+      return prevRoute.map((trigger) => {
+        if (trigger.uid === uid) {
+          return { ...trigger, jumps };
         }
         return trigger;
       });
     });
   };
 
+  const handleReorderRoute = (
+    activeId: number | string,
+    overId: number | string
+  ) => {
+    setRoute((prevRoute: TrickRouteTrigger[]) => {
+      const oldIndex = prevRoute.findIndex(
+        (trigger) => trigger.uid === activeId
+      );
+      const newIndex = prevRoute.findIndex(
+        (trigger) => trigger.uid === overId
+      );
+      return arrayMove(prevRoute, oldIndex, newIndex);
+    });
+  };
+
   const updateTextArea = () => {
     const mappedRoute = route.map(
       (trigger, index) =>
-        `${index + 1}: ${trigger.name} (G: ${trigger.passthrough}) ${trigger?.bhop && trigger?.bhop !== 0 ? "[J: x" + trigger?.bhop + "]" : ""}`
+        `${index + 1}: ${trigger.name} (G: ${trigger.passthrough}) ${trigger?.jumps && trigger?.jumps !== 0 ? "[J: x" + trigger?.jumps + "]" : ""}`
     );
 
     const result = `Tier: ${tier}\nStart Jump: ${jump}\nStart Speed: ${startSpeed}\n\n${mappedRoute.join("\n")}`;
@@ -64,7 +82,8 @@ export default function CreateRoute() {
       <CurrentRoute
         route={route}
         onRemove={handleTriggerRemove}
-        onAddBhop={handleTriggerAddBhop}
+        onChangeJumps={handleTriggerChangeJumps}
+        onReorderRoute={handleReorderRoute}
       />
       <hr />
       <FinalTrickInfo value={trickString} />
