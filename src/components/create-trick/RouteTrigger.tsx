@@ -25,7 +25,7 @@ export default function RouteTrigger({
   };
 
   return (
-    <li className="border border-border rounded-md flex flex-col gap-1 text-center hover:scale-105">
+    <li className="max-w-[160px] border border-border rounded-md flex flex-col gap-1 text-center hover:scale-105">
       <div
         ref={setNodeRef}
         {...attributes}
@@ -33,7 +33,7 @@ export default function RouteTrigger({
         style={style}
         className="relative"
       >
-        <Grip className="absolute right-2" color="#fff" />
+        <Grip className="absolute right-1" color="#fff" />
         <img
           className="max-h-[120px] rounded-t-md"
           src={trigger.image_url}
@@ -41,8 +41,8 @@ export default function RouteTrigger({
         />
       </div>
       <span>{trigger.name}</span>
-      <div className="flex items-center gap-1">
-        <span>Jumps</span>
+      <div className="flex flex-col gap-2 mt-auto">
+        <div className="flex items-center gap-2 px-1"><span>Jumps</span>
         <Input
           onChangeCapture={(e) =>
             onChangeJumps(trigger.uid, Number(e.currentTarget.value))
@@ -51,14 +51,14 @@ export default function RouteTrigger({
           className="flex-1 max-w-20"
           type="number"
         />
+        </div>
+        <Button
+          className="hover:bg-red-800 w-full"
+          onClick={() => onRemove(trigger.uid)}
+        >
+          Remove
+        </Button>
       </div>
-
-      <Button
-        className="hover:bg-red-800"
-        onClick={() => onRemove(trigger.uid)}
-      >
-        Remove
-      </Button>
     </li>
   );
 }

@@ -16,7 +16,7 @@ export default function CurrentRoute({
   onChangeJumps,
   onReorderRoute,
 }: CurrentRouteProps) {
-  
+
   const handleDrag = (event: DragEndEvent) => {
     const { active, over } = event;
 
@@ -28,7 +28,7 @@ export default function CurrentRoute({
   return (
     <div>
       <h2 className="font-bold uppercase text-center">Current Route:</h2>
-      <ul className="flex gap-2 flex-wrap">
+      <ul className="flex gap-2 flex-wrap mt-2">
         <DndContext onDragEnd={handleDrag}>
           <SortableContext items={route}>
             {route.map((trigger) => (
