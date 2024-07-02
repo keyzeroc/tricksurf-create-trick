@@ -4,6 +4,8 @@ import { CSS } from "@dnd-kit/utilities";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Grip } from "lucide-react";
+import { useTheme } from "../theme/theme-provider";
+const noImageSrc = "./no-image.jpg";
 
 type Props = {
   trigger: TrickRouteTrigger;
@@ -16,6 +18,7 @@ export default function RouteTrigger({
   onChangeJumps,
   onRemove,
 }: Props) {
+  const themeCtx = useTheme();
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: trigger.uid });
 
@@ -36,8 +39,8 @@ export default function RouteTrigger({
       >
         <Grip className="absolute right-1" color="#fff" />
         <img
-          className="max-h-[120px] rounded-t-md"
-          src={trigger.image_url}
+          className={`max-h-[120px] rounded-t-md ${!trigger.image_url && themeCtx.theme === "dark" ? "invert" : ""}`}
+          src={trigger.image_url || noImageSrc}
           alt={trigger.name}
         />
       </div>
